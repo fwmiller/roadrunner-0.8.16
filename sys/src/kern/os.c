@@ -30,6 +30,7 @@
 #include <dev/fd.h>
 #include <dev/hd.h>
 #include <dev/kbd.h>
+#include <dev/uart.h>
 #include <event.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -134,6 +135,14 @@ os()
     devops.specific.char_ops.get = NULL;
     devops.specific.char_ops.put = cons_put;
     dev_inst("cons", DEV_TYPE_CHAR, &devops, NULL);
+
+    /* Install uart  device */
+    devops.init = uart_init;
+    devops.shut = uart_shut;
+    devops.ioctl = uart_ioctl;
+    devops.specific.char_ops.get = NULL;
+    devops.specific.char_ops.put = uart_put;
+    dev_inst("uart", DEV_TYPE_CHAR, &devops, NULL);
 
     /* Install floppy disk device */
     devops.init = fd_init;
